@@ -1,3 +1,20 @@
 <h3>Products View!</h3>
 
-{{test}}
+<div class='panel panel-default'>
+	<div class='panel panel-heading'>Products</div>
+	<div class='panel panel-body'>
+		<ul class='list-group'>
+			<li ng-repeat='item in products' class='flex space-between list-group-item'>
+				<div>
+					item: {{item.name}}<br />
+					price: ${{item.price}}<br />
+					description: {{item.description}}
+				</div>
+				<div>
+					<input type='number' ng-model='quantities[item._id]' ng-init='quantities[item._id]=1'>
+					<button class='btn btn-success' ng-click='addToCart(item, quantities[item._id])'>Add to Cart</button>
+				</div>
+			</li>
+		</ul>
+	</div>
+</div>

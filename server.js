@@ -6,10 +6,21 @@ var BodyParser = require('body-parser');
 var Session  = require('express-session');
 var Mongoose = require('mongoose');
 
+
 var port = 9001;
 var mongoURI = 'localhost:27017/full-stack-ecommerce';
 
+
+// Controllers =======================
+
+
 var userCtrl = require('./server-assets/controllers/user-control');
+var productCtrl = require('./server-assets/controllers/product-control');
+
+
+
+
+// Middleware =========================
 
 Passport.serializeUser(function(user, done){
 	done(null, user);
@@ -43,17 +54,34 @@ Passport.use(new GoogleStrategy({
 	})
 }));
 
+
+
+// Authentication ========================
+
 App.get('/auth/google', Passport.authenticate('google', { scope: 'https://www.googleapis.com/auth/plus.login' }));
 
 App.get('/auth/google/callback', Passport.authenticate('google', {
-	failureRedirect: '/auth/failure'
-}), function(req, res){
-	res.redirect('/api/me');
-});
+	failureRedirect: '/auth/failure', successRedirect: '/'
+}));
 
-App.get('/api/me', function(req, res){
+App.get('/auth/logout', function(req, res){
+	req.logout();
+	res.status(200).json(req.user);
+})
+
+App.get('/auth/me', function(req, res){
 	return res.json(req.user);
 });
+
+// Endpoints ===============================
+
+
+App.post('/api/products', productCtrl.post);
+App.get('/api/products', productCtrl.getAll);
+App.put('/api/users/:id', userCtrl.put);
+
+
+// Connections ==============================
 
 Mongoose.connect(mongoURI, function(){
 	console.log('Connected to MongoDB at: ' + mongoURI);

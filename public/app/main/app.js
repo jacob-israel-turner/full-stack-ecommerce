@@ -8,7 +8,12 @@ app.config(function($routeProvider){
 		})
 		.when('/products', {
 			templateUrl: '/app/templates/products/products-view.html',
-			controller: 'productsCtrl'
+			controller: 'productsCtrl',
+			resolve: {
+				products: function(productService){
+					return productService.getAll();
+				}
+			}
 		})
 		// .when('/products/:id', {
 		// 	templateUrl: '/app/templates/single-product/product-view.html',
@@ -16,7 +21,12 @@ app.config(function($routeProvider){
 		// })
 		.when('/dashboard', {
 			templateUrl: '/app/templates/dashboard/dashboard-view.html',
-			controller: 'dashboardCtrl'
+			controller: 'dashboardCtrl',
+			resolve: {
+				user: function(authService){
+					return authService.updateUser()
+				}
+			}
 		})
 		.otherwise('/');
 })

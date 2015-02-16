@@ -47,5 +47,17 @@ module.exports = {
 			}
 		})
 		return deferred.promise;
+	},
+	put: function(req, res){
+		delete req.body._id;
+		console.log(req.body)
+		User.update({ _id: req.params.id }, req.body, function(err, results){
+			console.log(err, results);
+			if(err){
+				res.status(500).json(err);
+			} else {
+				res.status(200).json(results);
+			}
+		})
 	}
 }

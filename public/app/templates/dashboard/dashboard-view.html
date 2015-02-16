@@ -1,3 +1,6 @@
 <h3>Dashboard View!</h3>
 
-{{test}}
+<div class='panel panel-default'>
+	<div class='panel panel-heading'>{{user.name}}'s Cart:</div>
+	<div ng-repeat='item in user.cart'>item: {{item.product.name}}<br /> quantity: {{item.quantity}}<hr></div>
+</div>
