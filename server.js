@@ -37,7 +37,7 @@ Passport.deserializeUser(function(obj, done){
 
 App.use(Express.static(__dirname + '/public'));
 App.use(BodyParser.json());
-App.use(Session({ secret: 'EcommerceSIKRIT' }));
+App.use(Session({ secret: 'EcommerceSIKRIT', resave: false, saveUninitialized: false }));
 App.use(Passport.initialize());
 App.use(Passport.session());
 
@@ -66,7 +66,7 @@ App.get('/auth/google/callback', Passport.authenticate('google', {
 
 App.get('/auth/logout', function(req, res){
 	req.logout();
-	res.status(200).json(req.user);
+	res.status(200).send('Logged Out');
 })
 
 App.get('/auth/me', function(req, res){
@@ -79,6 +79,8 @@ App.get('/auth/me', function(req, res){
 App.post('/api/products', productCtrl.post);
 App.get('/api/products', productCtrl.getAll);
 App.put('/api/users/:id', userCtrl.put);
+
+App.get('/api/users/:id', userCtrl.getOneAndRespond);
 
 
 // Connections ==============================

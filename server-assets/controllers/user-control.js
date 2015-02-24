@@ -1,39 +1,30 @@
 var User = require('./../models/user');
+var userService = require('./../services/user-service');
 var Q = require('q');
 
 module.exports = {
 	updateOrCreate: function(user){
 		var deferred = Q.defer();
-		User.findOne({ googleId: user.id }, function(err, results){
-			if(err) return deferred.reject(err);
-			if(results){
-				User.update({ _id: results._id }, {
-					name: user.displayName,
-					plusLink: user._json.link,
-					picture: user._json.picture,
-					gender: user._json.gender
-				}, function(err, results){
-					if(err){
-						return deferred.reject(err);
-					} else {
-						deferred.resolve(results);
-					}
-				})
-			} else {
-				User.create({
-					googleId: user.id,
-					name: user.displayName,
-					plusLink: user._json.link,
-					picture: user._json.picture,
-					gender: user._json.gender
-				}, function(err, results){
-					if(err){
-						return deferred.reject(err);
-					} else {
-						deferred.resolve(results);
-					}
-				})
-			}
+		User.findOneAndUpdate(
+			{ 
+				googleId: user.id //Checking for this id
+			}, 
+			{
+				googleId: user.id, //'update', or data to use to either update or create the user
+				name: user.displayName,
+				plusLink: user._json.link,
+				picture: user._json.picture,
+				gender: user._json.gender
+			},
+			{
+				upsert: true //This means 'If the user doesn't exist'
+			},
+			function(err, results){
+				if(err){
+					return deferred.reject(err);
+				} else {
+					deferred.resolve(results);
+				}
 		})
 		return deferred.promise;
 	},
@@ -59,5 +50,13 @@ module.exports = {
 				res.status(200).json(results);
 			}
 		})
+	},
+	getOneAndRespond: function(req, res){
+		userService.getOne(req.params.id)
+			.then(function(response){
+				res.status(200).json(response);
+			}, function(err){
+				res.status(500).json(err);
+			})
 	}
 }

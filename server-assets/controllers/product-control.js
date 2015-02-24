@@ -1,15 +1,14 @@
 var Product = require('./../models/product');
+var productService = require('./../services/product-service');
 
 module.exports = {
 	post: function(req, res){
-		Product.create(req.body, function(err, results){
-			if(err) {
-				console.log(err);
-				res.status(500).json(err);
-			} else {
+		productService.post(req.body)
+			.then(function(results){
 				res.status(200).json(results);
-			}
-		})
+			}, function(err){
+				res.status(500).json(err);
+			})
 	},
 	getAll: function(req, res){
 		Product.find(function(err, response){
